@@ -23,7 +23,7 @@ gerrit@ga4gh-starter-kit:/share/elwazi$ for i in `cut -d ' ' -f 1 1000GP_Phase3.
 cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
 crammd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
 echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-starter-kit.ilifu.ac.za:6000/$craimd5sum"; \
-done > 1000GP_Phase3.sample.ilifu.drs `
+done > 1000GP_Phase3.sample.ilifu.drs
 ```
 Do above for both Mali and Uganda nodes as well.
 
