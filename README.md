@@ -15,16 +15,28 @@ The user case would be. We will make use of the 1000 Genome data. We've selected
 
 ### Data Connect setup
 
+#### Part where we prepare DRS CRAM and CRAI ids to be added to database
+
+``gerrit@ga4gh-starter-kit:/share/elwazi$ for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.ilifu`; do  cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; crammd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-starter-kit.ilifu.ac.za:6000/$craimd5sum"; done > 1000GP_Phase3.sample.ilifu.drs `
+
+```
+Do above for both Mali and Uganda nodes as well.
+
 ### DRS setup
+
+### WES setup
+
+#### Workflow setup for test
+
+`https://github.com/grbot/cram-qc`
 
 ### Example
 - Link to Python Notebook demonstrating the process
 
 
-## To DO
+## To Do
 - Setup on Mali and Uganda instances
 - Setup a workflow that can select CRAMs from a Data Connect query, do joint genotyping, calculate allele frequencies and compare with other queries e.g. from different populations
 - Be able to retrieve the output reports through the API. Currently we need to login to the server
 - Include a Passport broker
 - Look into production versions of Data Connect, DRS, WES and Passport broker
-
