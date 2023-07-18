@@ -26,6 +26,16 @@ echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-s
 done > 1000GP_Phase3.sample.ilifu.drs
 ```
 
+#### Create the Data Connect Microservices 
+
+```
+We intended create three server instance for the data connect, one in Mali, Uganda and the last one in ilifu server.
+
+**** Ilifu Server set up setup
+
+
+```
+
 ### DRS setup
 
 Data Repository Service (DRS) provides minimal access to genomic file data by creating a DRS object for use in workflows as entry points to the files (![read more about DRS here](https://github.com/ga4gh/ga4gh-starter-kit-drs)). 
