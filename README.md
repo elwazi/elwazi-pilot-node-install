@@ -30,7 +30,7 @@ done > 1000GP_Phase3.sample.ilifu.drs
 
 Data Repository Service (DRS) provides minimal access to genomic file data by creating a DRS object for use in workflows as entry points to the files (![read more about DRS here](https://github.com/ga4gh/ga4gh-starter-kit-drs)). 
 
-The [docker-compose.yml](./docker-compose.yml) file has been configured to launch two docker services, the first service, relies on the [ga4gh-starter-kit-util](https://github.com/ga4gh/ga4gh-starter-kit-utils) docker image, creates a relational sqlite database to store DRS objects with a unique identifier, a URL to access the file associated with the object identifier and other additional information in different SQL tables (see [create-tables.sql](resources/drs/db-scripts/create-tables.sql) file). The second service configures the DRS server using the ga4gh-starter-kit-drs docker image and defines two HTTP access ports, one for API consumers and one for server administrator tasks. The server settings are defined in the YAML [configuration file](./resources/drs/config/config.yml).
+The [docker-compose.yml](./drs-wes/docker-compose.yml) file has been configured to launch two docker services, the first service, relies on the [ga4gh-starter-kit-util](https://github.com/ga4gh/ga4gh-starter-kit-utils) docker image, creates a relational sqlite database to store DRS objects with a unique identifier, a URL to access the file associated with the object identifier and other additional information in different SQL tables (see [create-tables.sql](./drs-wes/resources/drs/db-scripts/create-tables.sql) file). The second service configures the DRS server using the ga4gh-starter-kit-drs docker image and defines two HTTP access ports, one for API consumers and one for server administrator tasks. The server settings are defined in the YAML [configuration file](./drs-wes/resources/drs/config/config.yml).
 
 Once everything is in place, run the following command line to launch the services and start the DRS server:
 
@@ -44,7 +44,7 @@ Verify that a Docker DRS container is created and is listening for HTTP requests
 docker ps
 ```
 
-To stop the server, the following command stops and removes the DRS container. Also run the bash refresh.sh script to remove the sqlite database, in case of a fresh install.
+To stop the server, the following command stops and removes the DRS container. Also run the bash [refresh.sh](./drs-wes/refresh.sh) script to remove the sqlite database, in case of a fresh install.
 
 ```
 docker-compose down
