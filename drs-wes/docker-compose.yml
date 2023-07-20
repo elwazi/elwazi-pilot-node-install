@@ -29,6 +29,7 @@ services:
     volumes:
       - "./resources/drs/config:/config"
       - "./resources/drs/db:/db"
+      - '/share:/mnt"
     command: -c /config/config.yml
 
   # WES
