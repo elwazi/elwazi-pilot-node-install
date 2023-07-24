@@ -4,6 +4,9 @@ drs:
     hostname: ga4gh-starter-kit.ilifu.ac.za
     publicApiPort: 5000
     adminApiPort: 5001
+  drsServiceProps:
+    serveFileURLForFileObjects: true
+    serveStreamURLForFileObjects: true
   databaseProps:
     url: jdbc:sqlite:/db/drs.db
   serviceInfo:
