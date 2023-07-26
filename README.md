@@ -87,7 +87,10 @@ psql -h localhost -p 5432 -U postgres -d dataconnecttrino -c "GRANT ALL ON DATAB
 11. If you are in <em>data-connect-trino<\em> move a step back to home and then;
 ```
 cd elwazi-data-connect
+
+./ci/build-docker-image data-connect-trino:latest data-connect-trino latest
 ```
+
 12. Inside this directory, you will see <em>trino.properties<\em> file. This is how it will look like:
 ```
 connector.name=postgresql
@@ -141,6 +144,11 @@ GRANT ALL PRIVILEGES on TABLE genome_ilifu to dataconnecttrino
 
 18. Then Run the script <em>genome_ilifu.sql<\em> or copy and run it against Postgresql
 
+19. Run  the image you build in step 11.
+```
+docker run --name trino-data-connect --network host -e TRINO_DATASOURCE_URL=http://localhost:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/dataconnecttrino -e SPRING_PROFILES_ACTIVE=no-auth data-connect-trino:latest
+```
+```
 ### DRS setup
 
 Data Repository Service (DRS) provides minimal access to genomic file data by creating a DRS object for use in workflows as entry points to the files (![read more about DRS here](https://github.com/ga4gh/ga4gh-starter-kit-drs)). 
