@@ -1,0 +1,24 @@
+drs:
+  serverProps:
+    scheme: http
+    hostname: ga4gh-starter-kit.ilifu.ac.za
+    publicApiPort: 5000
+    adminApiPort: 5001
+  drsServiceProps:
+    serveFileURLForFileObjects: true
+    serveStreamURLForFileObjects: true
+  databaseProps:
+    url: jdbc:sqlite:/db/drs.db
+  serviceInfo:
+    id: drs.starterkit.federatedgenomics.org
+    name: Federated Genomics DRS service
+    description: Data Repository Service (DRS) instance serving public genomics datasets. Deployment of the GA4GH Starter Kit.
+    contactUrl: mailto:info@elwazi.ac.za
+    documentationUrl: https://apidocs.federatedgenomics.org/drs
+    createdAt: "2023-07-14T09:00:00Z"
+    updatedAt: "2023-07-14T09:00:00Z"
+    environment: development
+    version: 1.0.0
+    organization:
+      name: CBIO
+      url: https://cbio.uct.ac.za
