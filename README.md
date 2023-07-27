@@ -19,11 +19,25 @@ The user case would be. We will make use of the 1000 Genome data. We've selected
 #### Part where we prepare DRS CRAM and CRAI ids to be added to database
 
 ```
-gerrit@ga4gh-starter-kit:/share/elwazi$ for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.ilifu`;do \
+for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.uganda`;do \
 cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
-crammd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
-echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-starter-kit.ilifu.ac.za:6000/$craimd5sum"; \
+crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
+echo -e "$i\tdrs://154.114.10.54:5000/$crammd5sum\tdrs://154.114.10.54:5000/$craimd5sum"; \
+done > 1000GP_Phase3.sample.uganda.drs
+
+for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.ilifu`;do \
+cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
+crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
+echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$craimd5sum"; \
 done > 1000GP_Phase3.sample.ilifu.drs
+
+for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.mali`;do \
+cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
+crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
+echo -e "$i\tdrs://154.114.10.62:5000/$crammd5sum\tdrs://154.114.10.62:5000/$craimd5sum"; \
+done > 1000GP_Phase3.sample.mali.drs
+
+cat 1000GP_Phase3.sample.ilifu.drs 1000GP_Phase3.sample.mali.drs 1000GP_Phase3.sample.uganda.drs > 1000GP_Phase3.sample.all.drs
 ```
 
 #### Data Connect Microservices Setup on Ilifu Server
@@ -174,6 +188,14 @@ docker-compose down
 ```
 
 The Python notebook, populate-db.ipynb, populates the sqlite database with test data. It uses the sample ID in the first column of the text file, `xx.ilifu`, to construct the full path to the CRAM and CRAI files. The hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
+
+### WES setup
+
+Need Nextflow installed on the nodes. Version = ??. More instructions here.
+
+### Firewall
+All and only the three nodes can talk to each other on the necessary ports. 
+
 
 ### Example
 - Link to Python Notebook demonstrating the process
