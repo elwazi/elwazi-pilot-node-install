@@ -1,0 +1,28 @@
+wes:
+  serverProps:
+    scheme: http
+    hostname: 154.114.10.62
+    publicApiPort: 6000
+    adminApiPort: 6001
+  databaseProps:
+    url: jdbc:sqlite:/opt/ga4gh-starter-kit-wes/ga4gh-starter-kit.dev.db
+    # username: takudzwa
+    # password: 
+    # poolSize: 8
+    # showSQL: true
+  serviceInfo:
+    # id: com.elwazi.drs
+    # name: eLwazi ODSP
+    # description: This service serves data according to the DRS protocol...
+    # contactUrl: mailto:tnmusarurwa@gmail.com
+    # documentationUrl: https://www.elwazi.org/about_platform
+    # createdAt: 2023-05-02T12:00:00Z
+    # updatedAt: 2023-05-02T12:00:00Z
+    # environment: production
+    # version: 1.0.0
+    # organization:
+    #   name: eLwazi ODSP
+    #   url: https://www.elwazi.org
+  wesServiceProps:
+    # serveFileURLForFileObjects: true
+    # serveStreamURLForFileObjects: true
