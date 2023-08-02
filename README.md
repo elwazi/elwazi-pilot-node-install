@@ -2,145 +2,27 @@
 
 ## Background
 
-The aim is to set up three servers that would mimic (and finaly be) instances that runs on the Ilifu infrastructure, Mali ACE infrastructure and Ugande ACE infrastructure.
+The aim is to set up three servers that would mimic (and finaly be) instances that runs on the South-African infrastructure, Mali ACE infrastructure and Ugande ACE infrastructure.
 
-The idea is to make use of three GA4GH standards, Data Connnect, DRS and WES. The plan is to later incorporate Passports in the design.
+The idea is to make use of three GA4GH standards, Data Connnect, DRS and WES. The plan is to later incorporate Passports in the design but for now we use firewall rules to allow only access between nodes.
 
 <p align="center">
 <img src="https://github.com/elwazi/eLwazi-pilot-node-install/blob/main/elwazi-pilot.png" width="500" height="500">
 </p>
 
-The user case would be. We will make use of the 1000 Genome data. We've selected the ACE2 region from the full genome CRAMs, indexed those to create a more working version of the data. We divided the data into three batches and the DRS and Data Connect servers will therefor just host a specific batch at the corresponding instances. A user would query the Data Connect servers, select the DRS CRAM objects based on the query and submit those to a WES endpoint. Queries on Data Connect can be done using sample id, population group, super population group and sex. The WES endpoint will process some stats on the CRAM files and generate a combined MultiQC report.
+The user case would be. We will make use of the 1000 Genome data. We've selected the ACE2 region from the full genome CRAMs, indexed those to create a more working version of the data. We divided the data into three batches and the DRS and servers will host a specific batch at the corresponding instances. The Data Connect server will contain CRAM/CRAI access details (DRS ids) from all the DRS servers. A user would query the Data Connect servers, select the DRS CRAM objects based on the query and submit those to a WES endpoint. Queries on Data Connect can be done using sample id, population group, super population group and sex. The WES endpoint will process some stats on the CRAM files and generate a combined MultiQC report.
 
 ## Instructions on individual steps
 
 ### Data Connect setup
 
-#### Part where we prepare DRS CRAM and CRAI ids to be added to database
-
-```
-for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.uganda`;do \
-cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
-crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
-echo -e "$i\tdrs://154.114.10.54:5000/$crammd5sum\tdrs://154.114.10.54:5000/$craimd5sum"; \
-done > 1000GP_Phase3.sample.uganda.drs
-
-for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.ilifu`;do \
-cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
-crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
-echo -e "$i\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$crammd5sum\tdrs://ga4gh-starter-kit.ilifu.ac.za:5000/$craimd5sum"; \
-done > 1000GP_Phase3.sample.ilifu.drs
-
-for i in `cut -d ' ' -f 1 1000GP_Phase3.sample.mali`;do \
-cram=`ls /share/elwazi/crams/$i/$i*.cram`; crai=`ls /share/elwazi/crams/$i/$i*.cram.crai`; \
-crammd5sum=`echo -n $cram | md5sum | cut -f 1 -d ' '`; craimd5sum=`echo -n $crai | md5sum | cut -f 1 -d ' '`; \
-echo -e "$i\tdrs://154.114.10.62:5000/$crammd5sum\tdrs://154.114.10.62:5000/$craimd5sum"; \
-done > 1000GP_Phase3.sample.mali.drs
-
-cat 1000GP_Phase3.sample.ilifu.drs 1000GP_Phase3.sample.mali.drs 1000GP_Phase3.sample.uganda.drs > 1000GP_Phase3.sample.all.drs
-```
-
 #### Data Connect Microservices Setup on Ilifu Server
 
-We intended create three server instance for the data connect, one in Mali, Uganda and the last one in ilifu server.
+The setup was followed from [here](https://github.com/mcupak/elwazi-data-connect-scripts)
 
-##### Ilifu Server set up setup
+Additionally a database was created for our purposes and populated
 
-The GA4GH Standards Steering Committee approved the Data Connect API, a new standard to support federated search of disparate datasets. ([Get more info about data connect service in this repo](https://github.com/mcupak/elwazi-data-connect-scripts.git)).
-
-The implementatition is as follow:
-1. **ssh** or ensure you are in the **server**
-2. Go into the this git repo,([here](https://github.com/mcupak/elwazi-data-connect-scripts.git)).
-3. Clone the repo <em><strong> git clone https://github.com/mcupak/elwazi-data-connect-scripts.git </strong></em>.
-4. Navigate into the directory, <em><strong> cd elwazi-data-connect-scripts </strong></em>.
-5. To install the trino cli in `/usr/local/bin`, execute:
-
-```
-    install-trino-cli.sh
-```
-
-6. Pull the trino docker image. You can renme it the image depending on the server i.e ilifu
-```
-docker run -d --network host --name ilifu-trino trinodb/trino
-```
-
-7. We pull the postgres docker image:
-
-```
-docker run -d --name ilifu-postgres --network host -e POSTGRES_PASSWORD=postgres postgres
-export PGPASSWORD=postgres
-```
-
-8. You may need to create a sample dataset in Postgres Database, to test.
-```
-psql -h localhost -U postgres -p 5432 -c "CREATE DATABASE \"pgp-dataset-service\""
-psql -h localhost -U postgres -p 5432 -c "CREATE USER \"pgp-dataset-service\" WITH PASSWORD 'pgp-dataset-service'"
-psql -h localhost -U postgres -p 5432 -c "GRANT ALL ON DATABASE \"pgp-dataset-service\" TO \"pgp-dataset-service\""
-psql -h localhost -U postgres -p 5432 -c "CREATE USER trinouser3"
-psql -h localhost -U postgres -p 5432 -c "CREATE USER prestouser"
-psql -h localhost -U postgres -p 5432 -c "CREATE USER prestouser3"
-psql -h localhost -U postgres -p 5432 -d "pgp-dataset-service" -f data-connect-test-db.sql
-```
-**Note:** The dataset here is generated by the data-connect-test-db.sql.
-
-
-9. In the server, clone:
-```
-git clone --branch elwazi https://github.com/DNAstack/data-connect-trino.git
-
-cd data-connect-trino
-```
-
-10. Run the scripts below to create database, user and password:
-```
-psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE dataconnecttrino"
-psql -h localhost -p 5432 -U postgres -d dataconnecttrino -c "CREATE USER \"dataconnecttrino\" WITH PASSWORD 'dataconnecttrino'"
-psql -h localhost -p 5432 -U postgres -d dataconnecttrino -c "GRANT ALL ON DATABASE \"dataconnecttrino\" TO dataconnecttrino"
- ```
-**Note:** You can rename the above to match your preferences but make sure you remember since they are important.
-
-11. If you are in *data-connect-trino* move a step back to home and then;
-```
-cd elwazi-data-connect
-
-./ci/build-docker-image data-connect-trino:latest data-connect-trino latest
-```
-
-12. Inside this directory, you will see *trino.properties* file. This is how it will look like:
-```
-connector.name=postgresql
-connection-url=jdbc:postgresql://localhost/pgp-dataset-service
-connection-user=pgp-dataset-service
-connection-password=pgp-dataset-service
-```
-**Note:** It's because we used Postgres database, however this will vary depending on the database of choice.
-
-Make changes to this file to fit our database configuration in step 10. And the final file will look like this.
-```
-connector.name=postgresql
-connection-url=jdbc:postgresql://localhost/dataconnecttrino
-connection-user=dataconnecttrino
-connection-password=pgp-dataconnecttrino
-```
-
-13. Since we want to use the same configuration in our 'ilifu-trino' docker container. Copy the file into your docker container:
-
-```
-docker cp trino.properties elwazi-trino:/etc/trino/catalog
-```
-
-14. We have to restart the ilifu-trino:
-```
-docker restart elwazi-trino
-```
-
-15. Get into ilifu-postres:
-```
-docker exec -it ilifu-postgres /bin/bash
-
-psql dataconnecttrino -U postgres
-```
-16. Create the following table:
+1. Create the following table:
 ```
 CREATE TABLE genome_ilifu (
     sample_id VARCHAR(36) PRIMARY KEY,
@@ -151,59 +33,30 @@ CREATE TABLE genome_ilifu (
     crai_drs_id VARCHAR(10485760)
 );
 ```
-17. Grant all rights to our user 'dataconnecttrino':
+2. Grant all rights to our user 'dataconnecttrino':
 ```
 GRANT ALL PRIVILEGES on TABLE genome_ilifu to dataconnecttrino
 ```
-18. Then Run the script *genome_ilifu.sql* or copy and run it against Postgresql
+3. Then Run the script `genome_ilifu.sql` (in `resources`) or copy and run it against Postgresql
 
-19. Run  the image you build in step 11.
-```
-docker run --name trino-data-connect --network host -e TRINO_DATASOURCE_URL=http://localhost:8080 -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/dataconnecttrino -e SPRING_PROFILES_ACTIVE=no-auth data-connect-trino:latest
-```
+The `cram_drs_id` and `crai_drs_id` was calcualted based on the md5sum string version of the full file path. This was also how it was added as the DRS id in the DRS database. 
+
 
 ### DRS setup
 
-Data Repository Service (DRS) provides minimal access to genomic file data by creating a DRS object for use in workflows as entry points to the files ([read more about DRS here](https://github.com/ga4gh/ga4gh-starter-kit-drs)). 
+Did the setup [here](https://github.com/ga4gh/ga4gh-starter-kit-drs) and ran from source.
 
-The [docker-compose.yml](./drs-wes/docker-compose.yml) file has been configured to launch two docker services, the first service, relies on the [ga4gh-starter-kit-util](https://github.com/ga4gh/ga4gh-starter-kit-utils) docker image, creates a relational sqlite database to store DRS objects with a unique identifier, a URL to access the file associated with the object identifier and other additional information in different SQL tables (see [create-tables.sql](./drs-wes/resources/drs/db-scripts/create-tables.sql) file). The second service configures the DRS server using the ga4gh-starter-kit-drs docker image and defines two HTTP access ports, one for API consumers and one for server administrator tasks. The server settings are defined in the YAML [configuration file](./drs-wes/resources/drs/config/config.yml).
+Dbs, configs and scripts for each node are in `resources` folder.
 
-Once everything is in place, run the following command line to launch the services and start the DRS server:
-
-```
-docker-compose up -d
-```
-
-Verify that a Docker DRS container is created and is listening for HTTP requests on the ports designed in the docker-compose.yml file:
-
-```
-docker ps
-```
-
-To stop the server, the following command stops and removes the DRS container. Also run the bash [refresh.sh](./drs-wes/refresh.sh) script to remove the sqlite database, in case of a fresh install.
-
-```
-docker-compose down
-./refresh.sh
-```
-
-The Python notebook, populate-db.ipynb, populates the sqlite database with test data. It uses the sample ID in the first column of the text file, `xx.ilifu`, to construct the full path to the CRAM and CRAI files. The hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
+The Python notebook, `populate-db.ipynb`, populates the sqlite database with test data. As previously mentioned he hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
 
 ### WES setup
 
-Need Nextflow installed on the nodes. Version = ??. More instructions here.
+Did the setup [here](https://github.com/ga4gh/ga4gh-starter-kit-wes) and ran from source.
 
-### Firewall
-All and only the three nodes can talk to each other on the necessary ports. 
+Dbs, configs and scripts for each node are in `resources` folder.
 
+### Orchestrator
 
-### Example
-- Link to Python Notebook demonstrating the process
-
-## To Do
-- Setup on Mali and Uganda instances
-- Setup a workflow that can select CRAMs from a Data Connect query, do joint genotyping, calculate allele frequencies and compare with other queries e.g. from different populations
-- Be able to retrieve the output reports through the API. Currently we need to login to the server
-- Include a Passport broker
-- Look into production versions of Data Connect, DRS, WES and Passport broker
+Jupyter notebook orchestrator implementing use two cases are [here](https://github.com/elwazi/elwazi-pilot-node-install/blob/main/resources/south-africa/orchestrator/elwazi-pilot-node-tests.ipynb)
 
