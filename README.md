@@ -37,7 +37,7 @@ CREATE TABLE genome_ilifu (
 ```
 GRANT ALL PRIVILEGES on TABLE genome_ilifu to dataconnecttrino
 ```
-3. Then Run the script `genome_ilifu.sql` (in `resources`) or copy and run it against Postgresql
+3. Then Run the script [`genome_ilifu.sql`](https://github.com/elwazi/elwazi-pilot-node-install/blob/main/resources/south-africa/data-connect/db/genome_ilifu.sql) or copy and run it against Postgresql
 
 The `cram_drs_id` and `crai_drs_id` was calcualted based on the md5sum string version of the full file path. This was also how it was added as the DRS id in the DRS database. 
 
@@ -48,7 +48,7 @@ Did the setup [here](https://github.com/ga4gh/ga4gh-starter-kit-drs) and ran fro
 
 Dbs, configs and scripts for each node are in `resources` folder.
 
-The Python notebook, `populate-db.ipynb`, populates the sqlite database with test data. As previously mentioned he hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
+The Python notebook, [`populate-db.ipynb`](https://github.com/elwazi/elwazi-pilot-node-install/blob/main/resources/south-africa/drs/scripts/populate-drs.ipynb), populates the sqlite database with test data. As previously mentioned he hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
 
 ### WES setup
 
