@@ -46,7 +46,7 @@ The `cram_drs_id` and `crai_drs_id` was calcualted based on the md5sum string ve
 
 Did the setup [here](https://github.com/ga4gh/ga4gh-starter-kit-drs) and ran from source.
 
-Dbs, configs and scripts for each node are in [In progress`resources`](https://github.com/elwazi/elwazi-pilot-node-install/tree/main/resources) folder.
+Dbs, configs and scripts for each node are in the [`resources`](https://github.com/elwazi/elwazi-pilot-node-install/tree/main/resources) folder.
 
 The Python notebook, [`populate-db.ipynb`](https://github.com/elwazi/elwazi-pilot-node-install/blob/main/resources/south-africa/drs/scripts/populate-drs.ipynb), populates the sqlite database with test data. As previously mentioned he hashlib md5 function is used to create the checksum for each file using its full path and use it as the identifier for the DRS object. The DRS object ID, file path, and other information is uploaded to the server database using an HTTP POST request.
 
@@ -54,7 +54,7 @@ The Python notebook, [`populate-db.ipynb`](https://github.com/elwazi/elwazi-pilo
 
 Did the setup [here](https://github.com/ga4gh/ga4gh-starter-kit-wes) and ran from source.
 
-Dbs, configs and scripts for each node are in [In progress`resources`](https://github.com/elwazi/elwazi-pilot-node-install/tree/main/resources) folder.
+Dbs, configs and scripts for each node are in the [`resources`](https://github.com/elwazi/elwazi-pilot-node-install/tree/main/resources) folder.
 
 ### Orchestrator
 
