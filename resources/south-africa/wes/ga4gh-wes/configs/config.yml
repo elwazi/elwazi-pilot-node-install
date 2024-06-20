@@ -1,0 +1,29 @@
+wes:
+  serverProps:
+    scheme: http
+    hostname: ga4gh-starter-kit.ilifu.ac.za
+    publicApiPort: 7500
+    adminApiPort: 7501
+  databaseProps:
+    url: jdbc:sqlite:/home/taku/uga_test/wes/ga4gh-starter-kit.dev.db
+    # username: takudzwa
+    # password: 
+    # poolSize: 8
+    # showSQL: true
+  serviceInfo:
+    # id: com.elwazi.drs
+    # name: eLwazi ODSP
+    # description: This service serves data according to the DRS protocol...
+    # contactUrl: mailto:tnmusarurwa@gmail.com
+    # documentationUrl: https://www.elwazi.org/about_platform
+    # createdAt: 2023-05-02T12:00:00Z
+    # updatedAt: 2023-05-02T12:00:00Z
+    # environment: production
+    # version: 1.0.0
+    # organization:
+    #   name: eLwazi ODSP
+    #   url: https://www.elwazi.org
+  wesServiceProps:
+    # serveFileURLForFileObjects: true
+    # serveStreamURLForFileObjects: true
+
