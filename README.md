@@ -109,3 +109,39 @@ Example:
 ```bash
 ./scripts/load-table.sh mali_ace mali-ace resources/sample-files/1000GP_Phase3.sample.mali.ace
 ```
+
+### Querying Data Connect
+
+The `query-metadata-and-files.sh` script allows you to query the sample metadata and associated files through DNAstack's Data Connect API.
+
+#### Prerequisites
+
+1. Install the DNAstack CLI tool:
+   - Follow the instructions at https://docs.omics.ai/products/command-line-interface/installation
+   - Ensure the `dnastack` command is available in your PATH
+
+2. The script expects data to be published to elwazi.omics.ai with the appropriate collection slug
+
+#### Running the Script
+
+```bash
+./scripts/query-metadata-and-files.sh <slug>
+```
+
+Where `<slug>` is the collection identifier (e.g., `sa-ilifu`, `mali-ace`, `uganda-uvri`).
+
+Example:
+```bash
+./scripts/query-metadata-and-files.sh sa-ilifu
+```
+
+The script will:
+1. Connect to elwazi.omics.ai using the DNAstack CLI
+2. Query the specified collection to join sample metadata with file information
+3. Return results showing:
+   - `sample_id`: The sample identifier
+   - `name`: The file name
+   - `drs_url`: The DRS URL for accessing the file
+4. Output the results in JSON format using `jq`
+
+The query joins the metadata table with the `_files` table to match files containing the sample ID in their names.
