@@ -118,7 +118,7 @@ The `query-metadata-and-files.sh` script allows you to query the sample metadata
 
 1. Install the DNAstack CLI tool:
    - Follow the instructions at https://docs.omics.ai/products/command-line-interface/installation
-   - Ensure the `dnastack` command is available in your PATH
+   - Ensure the `omics` command is available in your PATH
 
 2. The script expects data to be published to elwazi.omics.ai with the appropriate collection slug
 
