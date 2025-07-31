@@ -60,3 +60,52 @@ Dbs, configs and scripts for each node are in the [`resources`](https://github.c
 
 Jupyter notebook orchestrator implementing use two cases are [here](https://github.com/elwazi/elwazi-pilot-node-install/blob/main/resources/south-africa/orchestrator/elwazi-pilot-node-tests.ipynb)
 
+### Loading Sample Files for Data Connect
+
+The `load-all-sites.sh` script automates the loading of 1000 Genomes sample data from all sites into the PostgreSQL database for Data Connect.
+
+#### Prerequisites
+
+1. Ensure PostgreSQL connection environment variables are set:
+   ```bash
+   export PGHOST=elwazi-catalog.postgres.database.azure.com
+   export PGUSER=catalog_admin
+   export PGPASSWORD=your_password
+   export PGDATABASE=your_database_name  # Must not be 'postgres'
+   ```
+
+2. If you don't have a dedicated database, create one using the provided script:
+   ```bash
+   ./scripts/create-database-user.sh your_database_name
+   ```
+
+#### Running the Script
+
+To load all sample files from all sites:
+```bash
+cd scripts
+./load-all-sites.sh
+```
+
+The script will:
+1. Scan the `resources/sample-files` directory for all 1000GP sample files
+2. Extract the site information from the filename (e.g., `mali.ace` becomes facility `mali-ace`)
+3. Create a table for each site (e.g., `mali_ace`, `uganda_uvri`)
+4. Load the sample data with the following columns:
+   - `sample_id`: Sample identifier
+   - `population_code`: Population code (e.g., ACB, YRI)
+   - `superpopulation_code`: Super-population code (e.g., AFR, EUR)
+   - `sex`: Sample sex (male/female)
+   - `facility`: Site/facility name (e.g., mali-ace, uganda-uvri)
+
+#### Individual Site Loading
+
+To load a single site's data manually:
+```bash
+./scripts/load-table.sh table_name facility_name /path/to/sample/file
+```
+
+Example:
+```bash
+./scripts/load-table.sh mali_ace mali-ace resources/sample-files/1000GP_Phase3.sample.mali.ace
+```
